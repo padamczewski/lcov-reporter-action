@@ -1,9 +1,22 @@
-import { details, summary, b, fragment, table, tbody, tr, th, h2 } from "./html"
+import {
+	details,
+	summary,
+	b,
+	fragment,
+	table,
+	tbody,
+	tr,
+	th,
+	td,
+	h2,
+} from "./html"
 
-import { percentage } from "./lcov"
+import { percentage, percentageByType } from "./lcov"
 import { tabulate } from "./tabulate"
 
 export function comment(lcov, options) {
+	const percentage = percentageByType(lcov)
+
 	return fragment(
 		options.title ? h2(options.title) : "",
 		options.base
@@ -11,7 +24,13 @@ export function comment(lcov, options) {
 					options.base,
 			  )} will be`
 			: `Coverage for this commit`,
-		table(tbody(tr(th(percentage(lcov).toFixed(2), "%")))),
+		table(
+			tbody(
+				tr(th("🌳 Branches"), td(percentage.branches, "%")),
+				tr(th("🎯 Functions"), td(percentage.functions, "%")),
+				tr(th("📜 Lines"), td(percentage.lines, "%")),
+			),
+		),
 		"\n\n",
 		details(
 			summary(

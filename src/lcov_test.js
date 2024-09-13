@@ -1,4 +1,4 @@
-import { parse, percentage } from "./lcov"
+import { parse, percentage, percentageByType } from "./lcov"
 
 test("parse should parse lcov strings correctly", async function() {
 	const data = `
@@ -116,4 +116,25 @@ test("percentage should calculate the correct percentage", function() {
 			{ lines: { hit: 10, found: 15 } },
 		]),
 	).toBe(75)
+})
+
+test("percentage should return 100% for empty lcov", function() {
+	expect(
+		percentageByType([
+			{
+				lines: { hit: 20, found: 25 },
+				branches: { hit: 5, found: 6 },
+				functions: { hit: 4, found: 24 },
+			},
+			{
+				lines: { hit: 10, found: 15 },
+				branches: { hit: 2, found: 5 },
+				functions: { hit: 1, found: 12 },
+			},
+		]),
+	).toEqual({
+		lines: "75.00",
+		branches: "63.64",
+		functions: "13.89",
+	})
 })
